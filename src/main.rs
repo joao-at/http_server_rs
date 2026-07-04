@@ -1,3 +1,4 @@
+use std::fs::File;
 use std::net::{TcpListener, TcpStream};
 use std::io::prelude::*;
 
@@ -12,17 +13,40 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
     println!("Data:\n{}", String::from_utf8_lossy(&buffer));
 
     // Answer request
-    let response = "\
-    HTTP/1.1 200 OK\r\n\
-    Content-Length: 13\r\n\
-    Content-Type: text/plain\r\n\
-    \r\n\
-    Hello, world!";
+    let read_file_result = read_file_to_bytes("resources/static/html/index.html");
 
+    let response = format!(
+        "\
+        HTTP/1.1 200 OK\r\n\
+        Content-Length: {}\r\n\
+        Content-Type: text/html\r\n\
+        \r\n\
+        ",
+        match &read_file_result {
+            Ok(bytes) => bytes.len(),
+            Err(_) => 0,
+        }
+    );
+
+    println!("Response:\n{}", &response);
     stream.write_all(response.as_bytes())?;
+
+    if let Ok(bytes) = read_file_result {
+        stream.write_all(bytes.as_slice())?;
+    }
+
     stream.flush()?;
 
     Ok(())
+}
+
+fn read_file_to_bytes(path: &str) -> std::io::Result<Vec<u8>> {
+    let mut file = File::open(path)?;
+    let mut buffer: Vec<u8> = Vec::new();
+
+    file.read_to_end(&mut buffer)?;
+
+    Ok(buffer)
 }
 
 fn main() -> std::io::Result<()> {
