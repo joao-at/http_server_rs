@@ -9,11 +9,11 @@ The goal of this project is to get much more comfortable with the rust language,
 HTTP is a protocol that can be used in many places, but I'm specifically testing this server by using a web browser to request web pages. The main browser I'm using is Firefox.
 
 # TODO
-- [ ] Handle requests for css files
 - [ ] Implement keep connection alive
 - [ ] Handle concurrent connections
 
 ## Done
+- [x] Handle requests for css files
 - [x] Respond with different html files that match different request received
 - [x] Parse the headers of requests to recognize the request type and requested URI
 - [x] Create HTTP responses with external html files instead of hardcoded strings
