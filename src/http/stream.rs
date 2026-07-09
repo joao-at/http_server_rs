@@ -1,5 +1,5 @@
 use std::io::{BufRead, BufReader, Write};
-use std::net::TcpStream;
+use std::net::{SocketAddr, TcpStream};
 use crate::http::request::{Request, RequestMethod};
 use crate::http::response::Response;
 
@@ -42,7 +42,7 @@ impl HttpStream {
         )
     }
 
-    pub fn write_response(&mut self, response: Response) -> std::io::Result<()> {
+    pub fn write_response(&mut self, response: &Response) -> std::io::Result<()> {
 
         // Send headers
         let status = response.status.get_representations();
@@ -57,7 +57,7 @@ impl HttpStream {
 
         headers.push_str( "\r\n");
 
-        println!("{}", headers);
+        //println!("{}", headers);
 
         self.stream.write_all(headers.as_bytes())?;
 
@@ -69,5 +69,9 @@ impl HttpStream {
         self.stream.flush()?;
 
         Ok(())
+    }
+    
+    pub fn peer_addr(&self) -> std::io::Result<SocketAddr> {
+        self.stream.peer_addr()
     }
 }

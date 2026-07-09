@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::Display;
 use std::fs::File;
 use std::io::Read;
 use crate::http::response::{Response, Content, ResponseStatus};
@@ -102,5 +103,25 @@ impl Request {
         file.read_to_end(&mut buffer)?;
 
         Ok(buffer)
+    }
+}
+
+impl Display for RequestMethod {
+
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+
+        f.pad( match self {
+                Self::ErrorParsing => "Error",
+                Self::Get => "GET",
+                Self::Head => "HEAD",
+                Self::Post => "POST",
+                Self::Put => "PUT",
+                Self::Delete => "DELETE",
+                Self::Connect => "CONNECT",
+                Self::Options => "OPTIONS",
+                Self::Trace => "TRACE",
+                Self::Patch => "PATCH"
+            }
+        )
     }
 }

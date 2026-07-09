@@ -1,3 +1,5 @@
+use std::fmt::{Display, Formatter};
+
 #[derive(Debug)]
 pub struct Response {
     pub status: ResponseStatus,
@@ -36,5 +38,13 @@ impl ResponseStatus {
             //ResponseStatus::ImATeapot => (418, "I'm a Teapot"),
             ResponseStatus::NotImplemented => (501, "Not Implemented"),
         }
+    }
+}
+
+impl Display for ResponseStatus {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let (code, name) = self.get_representations();
+
+        f.pad(&format!("{code} {name}"))
     }
 }
